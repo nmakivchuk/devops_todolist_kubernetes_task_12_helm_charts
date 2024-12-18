@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Chart.Name}}
-  namespace: {{.Values.todoapp.namespace}}
+  name: {{ .Chart.Name}}
+  namespace: {{ .Values.todoapp.namespace}}
 spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{.Values.todoapp.rollingUpdate.maxSurge}}
-      maxUnavailable: {{.Values.todoapp.rollingUpdate.maxUnavailable}}
+      maxSurge: {{ .Values.todoapp.rollingUpdate.maxSurge}}
+      maxUnavailable: {{ .Values.todoapp.rollingUpdate.maxUnavailable}}
   selector:
     matchLabels:
-      app: {{.Chart.Name}}
+      app: {{ .Chart.Name}}
   template:
     metadata:
       labels:
-        app: {{.Chart.Name}}
+        app: {{ .Chart.Name}}
     spec:
-      serviceAccountName: {{.Values.todoapp.RBAC.name}}
+      serviceAccountName: {{ .Values.todoapp.RBAC.name}}
       containers:
-      - name: {{.Chart.Name}}
-        image: {{.Values.todoapp.image.repository}}: {{.Values.todoapp.image.tag}}
+      - name: {{ .Chart.Name}}
+        image: {{ .Values.todoapp.image.repository}}: {{ .Values.todoapp.image.tag}}
         volumeMounts:
         - name: data
           mountPath: /app/data
@@ -32,16 +32,16 @@ spec:
           readOnly: true
         resources:
           requests:
-            memory: {{.Values.todoapp.resources.requests.memory}}
-            cpu: {{.Values.todoapp.resources.requests.cpu}}
+            memory: {{ .Values.todoapp.resources.requests.memory}}
+            cpu: {{ .Values.todoapp.resources.requests.cpu}}
           limits:
-            memory: {{.Values.todoapp.resources.limits.memory}}
-            cpu: {{.Values.todoapp.resources.limits.cpu}}
+            memory: {{ .Values.todoapp.resources.limits.memory}}
+            cpu: {{ .Values.todoapp.resources.limits.cpu}}
         env:
         - name: PYTHONUNBUFFERED
           valueFrom:
             configMapKeyRef:
-              name: {{.Chart.Name}}-config
+              name: {{ .Chart.Name}}-config
               key: PYTHONUNBUFFERED
         {{- range $k, $v := .Values.todoapp.secrets}}
         - name: {{$k}}
@@ -67,13 +67,13 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: {{.Chart.Name}}-pvc
+          claimName: {{ .Chart.Name}}-pvc
       - name: app-secrets-volume
         secret:
-          secretName: {{.Chart.Name}}-secret
+          secretName: {{ .Chart.Name}}-secret
       - name: app-config-volume
         configMap:
-          name: {{.Chart.Name}}-config
+          name: {{ .Chart.Name}}-config
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
